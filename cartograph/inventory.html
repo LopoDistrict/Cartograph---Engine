@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartograph V0.0.1</title>
+    <link rel="stylesheet" href="css/style_inventory.css">
+</head>
+<body>
+    
+    <div class="block">
+        <div class="container">
+            <div class="top">
+                <!--script qui s'annule dans under_inventory.html
+                <div class="inventory">
+                        <div class="desc" id="desc">
+                            <button onclick="document.getElementById(`desc`).style.display = `none` " style="background-color: transparent; border: solid transparent; float: left;"><p style="color: white;">[<]</p></button>
+                            <h3 id="title" style="margin-right: 30px">wood</h3>
+                            <p id="description">wood ur mom</p>
+                            <p id="number">5</p>
+                            <button id="drop" onclick="drop()">Single drop</button>  
+                            <button id="use" onclick="use()">Use</button> 
+                        </div>
+                    </div>-->
+                
+                <script>
+                    const audio4 = new Audio(`./audio/menu_selection.wav`);
+                            audio4.play();
+                
+                    window.transitionToPage = function(href) {
+                        document.querySelector('body').style.opacity = 0    
+                        setTimeout(function() { 
+                            window.location.href = href
+                        }, 500)
+                    }
+
+                    document.addEventListener('DOMContentLoaded', function(event) {
+                        document.querySelector('body').style.opacity = 1
+                    })
+                    
+
+                </script>
+            </div>
+            <div class="center">
+                <div class="object">
+                    <div class="inventory">
+                        <h3>Inventory</h3>
+                        <iframe src="under_inventory.html" id="inventory_integration"></iframe>
+
+                    </div>
+                </div>
+                
+
+                
+            </div>
+            <footer>
+                <div class="bottom">
+                    <div class="icon">
+                        <div class="m"onclick="transitionToPage('map_display.html')">
+                            <a ><p id="bottom_icon" style="margin-left: 7%;color: grey;">Map</p></a> 
+                            <img id="map_icon"  src="images/entity/icon/map.png" ></div>
+        
+                            <div class="in"onclick="launchExe()">
+                            <a > <p id="bottom_icon" >Inventory</p></a>
+                            <img id="inventory_icon"  src="images/entity/icon/inventory.png" ></div>
+                              
+                            <div class="st"onclick="transitionToPage('stats.html')">
+                            <a ><p id="bottom_icon" style="color: grey;">Stats</p></a>
+                            <img id="stats_icon"  src="images/entity/icon/stats.png" ></div>
+        
+                            <div class="cr"onclick="transitionToPage('craft.html')">
+                            <a ><p id="bottom_icon" style="color: grey;">Craft</p></a>
+                            <img id="craft_icon"  src="images/entity/icon/craft.png" > </div>
+                    
+                    
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+</body>
+</html>

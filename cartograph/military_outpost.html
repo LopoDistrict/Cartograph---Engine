@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>military outpost</title>
+    <link rel="stylesheet" href="css/military_outpost.css">
+</head>
+<body>
+    <div class="main">
+        <div class="top"><button onclick="window.location = 'map_display.html'" style="background-color: transparent; border: solid transparent;"><p style="color: white;">[<]</p></button></div>
+        <div class="container">
+            <script>
+                const ui_audio = new Audio("./audio/ui_click.wav")
+                function hide(){
+                    ui_audio.play();
+                    document.getElementById("description_item").style.display = "none";
+                }
+                function display(show, hide, hide2=null){
+                    ui_audio.play();
+                    document.getElementById(show).style.display = "block";
+                    document.getElementById(hide).style.display = "none";
+                    if (hide2 != null){
+                        document.getElementById(hide2).style.display = "none";
+                    }
+                }
+                function show(name, description, price, type, atk){
+                    ui_audio.play();
+                    document.getElementById("description_item").style.display = "block";
+                    document.getElementById("title_item").innerHTML = name;
+                    document.getElementById("desc_item").innerHTML = description ;
+                    document.getElementById("price_item").innerHTML = price+ "$";
+                    
+                    var clickfun = document.getElementById("buying").getAttribute("onclick");
+                    var funname = clickfun.substring(0,clickfun.indexOf("("));       
+                    document.getElementById("buying").setAttribute("onclick",funname+`('${name}','${description}',${price},'${type}','${atk}')`);                    
+                }
+
+
+                function buy(name, description, price, type, atk){
+                    
+                ui_audio.play();
+                    loadJsonData();
+                    async function loadJsonData() {
+                    try {
+                        const response = await fetch('json/player_data.json');
+                        const jsonData = await response.json();
+                        const modifiedJsonData = JSON.stringify(jsonData, null, 2);
+                        
+                        const fs = require('fs');                                
+                        fs.writeFile('./json/player_data.json', modifiedJsonData, 'utf8', (err) => {
+                        if (err) {
+                            console.error('Error writing to the file:', err);
+                            return;
+                        }
+                        let current = require('./json/player_data.json');
+                        let data = {
+                            "name":name,
+                            "type":type,
+                            "number":1,
+                            "description": description,
+                            "atk":atk                        
+                        };
+                        current.inventory.push(data);
+                        fs.writeFileSync('json/player_data.json', JSON.stringify(current, null, 4));
+                        console.log('File has been modified successfully.');
+
+                        
+                        
+                        fs.readFile('json/player_stats.json', 'utf8', (err, data) => {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+                        const jsonData = JSON.parse(data);
+
+                        // Modify the money value by subtracting 5
+                        console.log(price);
+                        jsonData.Stats[0].money -=  price;
+
+                        // Stringify the modified object back into JSON format
+                        const modifiedJsonData = JSON.stringify(jsonData, null, 2);
+
+                        // Write the modified JSON data back to the file
+                        fs.writeFile('json/player_stats.json', modifiedJsonData, 'utf8', (err) => {
+                            if (err) {
+                            console.error(err);
+                            return;
+                            }
+                            console.log('Money value has been reduced ');
+                            
+                            var test = (Math.round(Math.random() * (3 - 1) + 1) );
+                            console.log(test);                                                
+
+                            
+                        });
+                        });
+
+                    });
+                    } catch (error) {
+                            console.error('Error loading JSON data:', error);
+                        }
+                    }
+                    
+                    
+            }
+
+
+            </script>
+            <div class="center">
+                <button id="button" onclick="display('buy', 'upgrade','craft')">Buy</button>
+                <button id="button" onclick="display('upgrade', 'buy','craft')">Upgrade</button>
+                <button id="button" onclick="display('craft', 'upgrade','buy')">Craft</button>
+
+                <div class="buy" id="buy">
+                    <h1 id="title">buy</h1>
+                    <div class="description_item" id="description_item">
+                        <button id="back" onclick="hide()" style="background-color:transparent;
+                        border: solid transparent; color: white; ">[<]</button>
+                        
+                        <div class="main_desc">
+                            <p id="title_item" style="margin-right: 30px;"></p>
+                            <p id="desc_item"></p>
+                            <p id="price_item"></p>
+                            <button id="buying" onclick="buy(name, description, price, type, atk)">Buy</button>
+
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="selling_item">
+                            <img src="images/items/alcool.png" id="image">
+                            <p id="name_item">Scrap</p>
+                            <button id="more" onclick="show('scrap', 'it bring the perfection', 15, 'item', null)">More</button>
+                            <p id="price">15$</p>
+                        </div>
+                        <div class="selling_item">
+                            <img src="images/items/alcool.png" id="image">
+                            <p id="name_item">iron</p>
+                            <button id="more" onclick="show('iron', ' the most common element on Earth', 35, 'ressource', null)">More</button>
+                            <p id="price">35$</p>
+                        </div>
+                        <div class="selling_item">
+                            <img src="images/items/wood.png" id="image">
+                            <p id="name_item">wood</p>
+                            <button id="more" onclick="show('wood', 'you can do everything with it', 25, 'item', null)">More</button>
+                            <p id="price">25$</p>
+                        </div>
+                        <div class="selling_item">
+                            <img src="images/items/alcool.png" id="image">
+                            <p id="name_item">lamp</p>
+                            <button id="more" onclick="show('lamp', 'light the shadow', 65, 'item', null)">More</button>
+                            <p id="price">65$</p>
+                        </div>
+                        <div class="selling_item">
+                            <img src="images/items/alcool.png" id="image">
+                            <p id="name_item">cigarettes</p>
+                            <button id="more" onclick="show('cigarettes', 'those are cigarettes', 35, 'item', null)">More</button>
+                            <p id="price">35$</p>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <script>
+                    //
+                    // CRAFT SCRIPT COPIED FROM CRAFT.HTML
+                    //
+                    var indice_inv = [];
+                var indice_require = [];
+
+
+
+                    function modify_val(item_crafted, requirment, desc, type, atk) {
+                        
+                        
+                    loadJsonData();
+
+                    async function loadJsonData() {
+                        try {
+                            const response = await fetch('json/player_data.json');
+                            const jsonData = await response.json();
+
+                            if (updateValues(requirment, jsonData) == true) {
+                                const modifiedJsonData = JSON.stringify(jsonData, null, 2);
+
+                                const fs = require('fs');
+                                
+                                fs.writeFile('json/player_data.json', modifiedJsonData, 'utf8', (err) => {
+                                    if (err) {
+                                        console.error('Error writing to the file:', err);
+                                        return;
+                                    }
+                                    let current = require('./json/player_data.json');
+                                    let data = {
+                                        "name":item_crafted,
+                                        "type":type,
+                                        "number":1,
+                                        "description": desc,
+                                        "atk": atk,
+                                    };
+                                    current.inventory.push(data);
+                                    fs.writeFileSync('json/player_data.json', JSON.stringify(current, null, 4));
+
+                                    console.log('File has been modified successfully.');
+                                    
+                                    
+                                });
+                                const audio = new Audio('audio/crafting.ogg');
+                                audio.play();
+                                move()
+                                
+                            }else{
+                                console.log("not enough item1");
+                                var req = document.getElementById("no_item");
+                                req.style.display = "block";
+
+                                setTimeout(() => {
+                                    console.log("ok")
+                                    document.getElementById("no_item").style.display = "none"
+                                },1500);
+                                
+                            }   
+                        } catch (error) {
+                            console.error('Error loading JSON data:', error);
+                        }
+                    }
+                }
+
+                function updateValues(dictionary, jsonData) {
+                    for (const key in dictionary) {
+                        const matchingItem = jsonData.inventory.find(item => item.name === key);
+
+                        if (matchingItem) {
+                            if (matchingItem.number >= dictionary[key]){
+                            matchingItem.number -= dictionary[key];
+                            }else{
+                               
+                                return false;
+                                
+                                }                               
+                        } else {
+                            return false;
+                        }
+                    }
+
+                    return true;
+
+                }
+                
+                function move() {
+                    var process = document.getElementById("process");
+                    process.style.display = "block";
+                    
+                    var elem = document.getElementById("myBar");   
+                    var width = 5;
+                    var id = setInterval(frame, 10);
+
+
+                function frame() {
+                    if (width >= 100) {
+                    
+                    setTimeout(() => {
+                        console.log("hiding");
+                        document.getElementById("process").style.display = "none"
+                    },1500);
+                    clearInterval(id);
+                    
+                    } else {
+                    width++; 
+                    elem.style.width = width + '%'; 
+                    elem.innerHTML = width * 1  + '%';
+                    }
+                }
+            }                
+                </script>
+
+                <div class="upgrade" id="upgrade">
+                    <h1 id="tilte">upgrade</h1>
+                    <iframe src="under_inventory.html" id="inventory"></iframe>
+                </div>
+                <div class="no_item" id="no_item">
+                    <p>Not enough Items</p>
+                </div>
+                <div class="process" id="process">
+                    <div id="myBar">5%</div>
+                    <p>Your item is being crafted.</p>
+                </div>
+
+                <div class="craft" id="craft">
+                    <h1 id="tile">craft</h1>
+                    <div class="craft">
+                
+                        <div class="sword" onclick="modify_val('hammer', {'wood': 3, 'iron':5}, 'With this hammer i will build my empire.', 'equipmentatk',[8, `lateral smash', 'go on break his bone', '9-21', 'direct bonk', 'kill him'`] )">
+                            <img src="images/items/hammer.png" style="float: left; margin-left: 20px; margin-top: 20px;">
+                            <h3 id="title_item">Hammer</h3>
+                            <img src="images/items/wood.png" id="image_wood">
+                            <p id="required">3</p>
+                            <img src="images/items/iron.png" id="image_wood">
+                            <p id="required">5</p>
+
+                        </div>
+
+                        <div class="sword" onclick="modify_val('iron', {'scrap': 20}, 'more stable and durable item', 'ressource')">
+                            <img src="images/items/iron.png" style="float: left; margin-left: 20px; margin-top: 20px; height: 60px; width: 60px;">
+                            <h3 id="title_item">iron</h3>
+                            <img src="images/items/scarp.png" id="img_solo">
+                            <p id="required">15</p>
+
+                        </div>
+
+                        <div class="sword" onclick="modify_val('nail bomb', {'scrap': 10, 'black_powder': 9}, 'you terrorist', [21,`KABOOOM!!`])">
+                            <img src="images/items/nail_bomv.png" style="float: left; margin-left: 20px; margin-top: 20px; height: 60px; width: 40px;">
+                            <h3 id="title_item">nail bomb</h3>
+                            <img src="images/items/scrap.png" id="img_solo">
+                            <p id="required">10</p>
+                            <img src="images/items/black_powder.png" id="img_solo">
+                            <p id="required">9</p>
+
+                        </div>
+                        
+
+                        <div class="sword" onclick="modify_val('simple hand grenade', {'scrap': 7, 'black_powder': 9}, 'hide it in snowball and throw it at your friends', [15, `hand grenade throw`])">
+                            <img src="images/items/simple_hand_grenade.png" style="float: left; margin-left: 20px; margin-top: 20px; height: 60px; width: 60px;">
+                            <h3 id="title_item">simple hand grenade</h3>
+                            <img src="images/items/scrap.png" id="img_solo">
+                            <p id="required">7</p>
+                            <img src="images/items/black_powder.png" id="img_solo">
+                            <p id="required">9</p>
+
+                        </div>
+
+                        <div class="sword" onclick="modify_val('molotov', {'alcool': 1, 'rags': 2}, 'homemade throwable incendiary grenade','item')">
+                            <img src="images/items/molotov.png" style="float: left; margin-left: 20px; margin-top: 20px; height: 60px; width: 60px;">
+                            <h3 id="title_item">molotov</h3>
+                            <img src="images/items/alcool.png" id="img_solo">
+                            <p id="required">1</p>
+                            <img src="images/items/rags.png" id="image_wood">
+                            <p id="required">2</p>
+
+                        </div>
+
+                        <div class="sword" onclick="modify_val('knife', {'wood': 1, 'scrap': 3}, 'sharp knife, perfect for simmering kobe beef','equipmentatk', [7, `'stab', 'aim for the lung'`])">
+                            <img src="images/items/knife.png" style="float: left; margin-left: 20px; margin-top: 20px; height: 60px; width: 60px;">
+                            <h3 id="title_item">knife</h3>
+                            <img src="images/items/wood.png" id="img_solo">
+                            <p id="required">1</p>
+                            <img src="images/items/scrap.png" id="image_wood">
+                            <p id="required">3  </p>
+
+                        </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
